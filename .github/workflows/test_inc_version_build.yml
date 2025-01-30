@@ -67,7 +67,7 @@ jobs:
               fi
               echo Old version: ${major}.${minor}
               minor=$(echo $minor + 1 | bc)
-              formatted_minor=$(printf "%03d" minor)
+              formatted_minor=$(printf "%03d" $minor)
               newversion=${major}.${formatted_minor}
 
               echo New version: ${newversion}
