@@ -36,7 +36,7 @@ jobs:
              if [ "$(basename $GITHUB_REF)" == "release" ]; then
                releasetag=v"$REPO_VERSION"
              fi
-             
+
              gh release create "$releasetag" --notes "Release $REPO_VERSION build $REPO_BUILD_NUMBER" --title "v${REPO_VERSION} Build ${REPO_BUILD_NUMBER}" --notes-start-tag "v1.003"
 
          - name: Increase build number
