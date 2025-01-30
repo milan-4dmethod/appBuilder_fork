@@ -68,8 +68,10 @@ jobs:
               
               newversion=${major}.${minor}
               
+              echo $newversion
+              
               gh variable list
-              gh variable set APP_VERSION --body "$new_version"
+              gh variable set APP_VERSION --body "$newversion"
               gh variable list
               
               gh variable list
