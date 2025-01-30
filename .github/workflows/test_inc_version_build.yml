@@ -65,13 +65,14 @@ jobs:
                 major="${BASH_REMATCH[1]}"
                 minor="${BASH_REMATCH[2]}"
               fi
-              
+              echo Old version: ${major}.${minor}
+              minor=$(echo $minor + 1 | bc)
               newversion=${major}.${minor}
-              
-              echo $newversion
+
+              echo New version: ${newversion}
               
               gh variable list
               gh variable set APP_VERSION --body "$newversion"
               gh variable list
-              
+
               gh variable list
