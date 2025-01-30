@@ -1,0 +1,67 @@
+name: Test version and build number increase
+
+on:
+
+  workflow_dispatch:
+     branches: 
+       - release
+
+jobs:
+   increase-version-number:
+      runs-on: ubuntu-latest
+      env:
+          REPO_BUILD_NUMBER: ${{ vars.APP_BUILD_NUMBER }}
+          REPO_VERSION: ${{ vars.APP_VERSION }}
+
+      steps:
+
+         - name: Checkout repository
+           uses: actions/checkout@v4.2.2
+
+         - name: Create release
+         
+           run: |
+             echo Creating release
+             echo $REPO_BUILD_NUMBER
+             echo $REPO_VERSION
+
+             # releasetag=v"$REPO_VERSION"_b"$REPO_BUILD_NUMBER"
+
+             if [ "$(basename $GITHUB_REF)" == "release" ]; then
+
+               releasetag=v"$REPO_VERSION"
+
+             fi
+             
+               gh release create "$releasetag" --notes "Release $version build $buildnumber"
+
+         - name: Increase build number
+           run: |
+
+             # set new build number in repository variable
+             echo "old values are:"
+             gh variable list
+             REPO_BUILD_NUMBER=$((REPO_BUILD_NUMBER+1))
+             echo "new build number in repo var will be $REPO_BUILD_NUMBER"
+             gh variable set REPO_BUILD_NUMBER --body "$REPO_BUILD_NUMBER"
+             gh variable list
+
+         - name: Increase version number
+           run: |
+
+              major=0
+              minor=0
+             
+              # break down the version number into it's components for 7.200
+              regex="([0-9]+).([0-9]+)"
+              
+              if [[ $REPO_VERSION =~ $regex ]]; then
+                major="${BASH_REMATCH[1]}"
+                minor="${BASH_REMATCH[2]}"
+              fi
+              
+              newversion=${major}.${minor}
+              
+              gh variable list
+              gh variable set REPO_VERSION --body "$new_version"
+              gh variable list
