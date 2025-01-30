@@ -49,7 +49,7 @@ jobs:
              gh variable list
              REPO_BUILD_NUMBER=$((REPO_BUILD_NUMBER+1))
              echo "new build number in repo var will be $REPO_BUILD_NUMBER"
-             gh variable set REPO_BUILD_NUMBER --body "$REPO_BUILD_NUMBER"
+             gh variable set APP_BUILD_NUMBER --body "$REPO_BUILD_NUMBER"
              gh variable list
 
          - name: Increase version number
@@ -69,5 +69,7 @@ jobs:
               newversion=${major}.${minor}
               
               gh variable list
-              gh variable set REPO_VERSION --body "$new_version"
+              gh variable set APP_VERSION --body "$new_version"
+              gh variable list
+              
               gh variable list
