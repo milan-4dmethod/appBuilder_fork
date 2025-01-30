@@ -6,6 +6,12 @@ on:
      branches: 
        - release
 
+concurrency:
+   group: ${{ github.workflow }}
+   
+env:
+  GH_TOKEN: ${{ secrets.MILANTOK }} # setting GH_TOKEN for the entire workflow
+
 jobs:
    increase-version-number:
       runs-on: ubuntu-latest
@@ -28,12 +34,10 @@ jobs:
              # releasetag=v"$REPO_VERSION"_b"$REPO_BUILD_NUMBER"
 
              if [ "$(basename $GITHUB_REF)" == "release" ]; then
-
                releasetag=v"$REPO_VERSION"
-
              fi
              
-               gh release create "$releasetag" --notes "Release $version build $buildnumber"
+             gh release create "$releasetag" --notes "Release $REPO_VERSION build $REPO_BUILD_NUMBER" --title "v${REPO_VERSION} Build ${REPO_BUILD_NUMBER}" --notes-start-tag "v1.003"
 
          - name: Increase build number
            run: |
@@ -43,7 +47,7 @@ jobs:
              gh variable list
              REPO_BUILD_NUMBER=$((REPO_BUILD_NUMBER+1))
              echo "new build number in repo var will be $REPO_BUILD_NUMBER"
-             gh variable set REPO_BUILD_NUMBER --body "$REPO_BUILD_NUMBER"
+             gh variable set APP_BUILD_NUMBER --body "$REPO_BUILD_NUMBER"
              gh variable list
 
          - name: Increase version number
@@ -59,9 +63,12 @@ jobs:
                 major="${BASH_REMATCH[1]}"
                 minor="${BASH_REMATCH[2]}"
               fi
-              
-              newversion=${major}.${minor}
-              
-              gh variable list
-              gh variable set REPO_VERSION --body "$new_version"
+              echo Old version: ${major}.${minor}
+              minor=$(echo $minor + 1 | bc)
+              formatted_minor=$(printf "%03d" $minor)
+              newversion=${major}.${formatted_minor}
+
+              echo New version: ${newversion}
+              echo Setting new version in actions variable
+              gh variable set APP_VERSION --body "$newversion"
               gh variable list
