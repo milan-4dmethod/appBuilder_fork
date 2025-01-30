@@ -1,5 +1,5 @@
 {
-  "actionMac": "BUILD_COMPILED_STRUCTURE",
+  "actionMac": "BUILD_APP#BUILD_COMPILED_STRUCTURE",
   "actionWin": "BUILD_APP#BUILD_SERVER#BUILD_CLIENT",
   "appName": "App4D",
   "buildDestinationFolder": "MyBuild",
@@ -10,7 +10,6 @@
   "uploadCompiledStruct": "sftp://4dmethod.4d.rs//home/dh_tz8msi/4dmethod.4d.rs/appBuilder/",
   "versionFileUploadURL": "sftp://4dmethod.4d.rs//home/dh_tz8msi/4dmethod.4d.rs/appBuilder/",
   "versionURL": "http://4dmethod.4d.rs/appBuilder/version.json",
-  "repo": "github.com/madamov/appBuilder_public",
   "maclicenses_URL": "https://binaries.4d.rs/dev_mac.zip",
   "winlicenses_URL": "https://binaries.4d.rs/dev_win.zip",
   "mac4D_URL": "https://binaries.4d.rs/4D_203_mac.zip",
@@ -20,9 +19,10 @@
   "macVL_URL": "https://binaries.4d.rs/4D_Volume_Desktop_203_mac.zip",
   "winVL_URL": "https://binaries.4d.rs/4D_Volume_Desktop_203_win.zip",
   "macOS": {
+    "notarize": "True",
     "signing": {
-      "sign": "False",
-      "adHoc": "False",
+      "sign": "True",
+      "adHoc": "True",
       "certificateName": "Developer ID Application: ADAMOV KONSULTACIJE DOO BEOGRAD (JZ5A5UZ7M5)"
     }
   }

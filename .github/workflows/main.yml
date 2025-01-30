@@ -11,7 +11,7 @@ concurrency:
    group: ${{ github.workflow }}
    
 env:
-  GH_TOKEN: ${{ secrets.MILANTOK }} # setting GH_TOKEN for the entire workflow
+  GH_TOKEN: ${{ secrets.MY_GH_TOKEN }} # setting GH_TOKEN for the entire workflow
 
 jobs:
   build-on-mac:
@@ -47,6 +47,16 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
           
+      - name: Create keychain profile for notarization
+        env:
+          APPLE_ID: ${{ secrets.MY_APPLE_ID }}
+          TEAM_ID: ${{ secrets.MY_TEAM_ID }}
+          APP_SPECIFIC_PASSWORD: ${{ secrets.MY_APP_SPECIFIC_PASSWORD }}
+
+        run: |
+          # setting up things for notarization
+
+          xcrun notarytool store-credentials myApp_profile --apple-id "$APPLE_ID" --team-id "$TEAM_ID" --password "$APP_SPECIFIC_PASSWORD"
           
       - id: step1
         name: Build Action Mac
@@ -66,7 +76,6 @@ jobs:
             # Use test server for uploads
             echo "Using test server parameters for branch $(basename $GITHUB_REF)"
             cp -f ./buildFiles/parameters_testserver.json ./buildFiles/parameters.json
-            cat ./buildFiles/parameters.json
             export UPLOAD_USER=${{ secrets.UPLOAD_TEST_USER }}
             export UPLOAD_PASSWORD=${{ secrets.UPLOAD__TEST_PASSWORD }}
          fi
@@ -87,6 +96,8 @@ jobs:
             export UPLOAD_USER=${{ secrets.UPLOAD_USER }}
             export UPLOAD_PASSWORD=${{ secrets.UPLOAD_PASSWORD }}
          fi
+
+         cat ./buildFiles/parameters.json
           
          ./buildFiles/scripts/build_all.sh
          
